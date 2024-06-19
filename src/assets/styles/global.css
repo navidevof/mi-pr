@@ -1,0 +1,30 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  input[type='number']::-webkit-inner-spin-button,
+  input[type='number']::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+}
+
+html,
+body {
+  @apply bg-custom-black-1 text-white;
+}
+
+.hover-button {
+  @apply cursor-pointer transition hover:scale-95 hover:saturate-150;
+}
+
+.main-button {
+  @apply hover-button w-fit rounded bg-custom-orange-1 px-5 py-2 font-semibold text-white;
+}
+
+input,
+textarea,
+select {
+  @apply rounded-md border border-custom-gray-1 bg-custom-black-3 px-4 py-2 outline-none;
+}
