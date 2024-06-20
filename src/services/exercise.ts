@@ -6,7 +6,7 @@ import { collection, deleteDoc, doc, getDocs, orderBy, query, setDoc, updateDoc,
 export const getExercises = async ({ uid }: { uid: string }) => {
   try {
     const exercisesSnap = await getDocs(
-      query(collection(db, exercisesCollection), where('createdBy', 'in', ['', uid]), orderBy('name', 'asc'))
+      query(collection(db, exercisesCollection), where('createdBy', 'in', ['', uid]), orderBy('createdBy', 'desc'), orderBy('name', 'asc'))
     );
 
     const exercises: IExercise[] = exercisesSnap.docs.map(doc => doc.data() as IExercise);

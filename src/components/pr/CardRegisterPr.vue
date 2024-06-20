@@ -71,7 +71,7 @@ const data = ref({
 onMounted(() => {
   const exercise = exercises.value.find(e => e.exerciseId == exerciseId);
   if (exercise) {
-    data.value = exercise;
+    data.value = { ...exercise };
   }
 });
 

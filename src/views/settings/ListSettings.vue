@@ -15,7 +15,7 @@ import MainSection from '@/components/common/sections/MainSection.vue';
 import IconChevron from '@/components/icons/IconChevron.vue';
 
 const routes = [
-  { link: '/configuracion/categorias', title: 'Categorías' },
+  { link: '/configuracion/rutinas', title: 'Rutinas' },
   { link: '/configuracion/ejercicios', title: 'Ejercicios' },
 ];
 </script>

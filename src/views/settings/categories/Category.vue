@@ -1,9 +1,9 @@
 <template>
-  <MainSection title="Editar categoría" :show-back-arrow="true">
+  <MainSection title="Editar rutina" :show-back-arrow="true">
     <section class="flex flex-col gap-y-4">
       <form @submit.prevent="changeName" class="flex w-full items-end gap-5">
         <label class="flex w-full flex-col gap-y-2">
-          <span class="font-semibold">Nombre de la categoría</span>
+          <span class="font-semibold">Nombre de la rutina</span>
           <input required id="name" name="name" class="w-full" v-model="newName" />
         </label>
         <button class="main-button h-fit w-full">Cambiar</button>
@@ -16,7 +16,7 @@
         class="flex items-start gap-x-4 rounded-lg border-2 border-blue-900/60 bg-custom-black-3 p-3"
       >
         <IconInformation class="w-10 pt-1 text-blue-500" />
-        <span class="w-full text-sm">Vaya, parece que aún no has realizado ningún PR para esta categoría.</span>
+        <span class="w-full text-sm">Vaya, parece que aún no has realizado ningún PR para esta rutina.</span>
       </aside>
       <aside class="flex flex-col gap-y-2">
         <h4 class="font-semibold">Ejercicios</h4>

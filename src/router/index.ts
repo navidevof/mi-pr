@@ -20,12 +20,12 @@ const protectedRoutes: RouteRecordRaw[] = [
         component: () => import('@/views/settings/ListSettings.vue'),
       },
       {
-        path: '/configuracion/categorias',
+        path: '/configuracion/rutinas',
         name: 'settings-categories',
         component: () => import('@/views/settings/categories/Categories.vue'),
       },
       {
-        path: '/configuracion/categorias/:categoryId',
+        path: '/configuracion/rutinas/:categoryId',
         name: 'settings-categories-id',
         component: () => import('@/views/settings/categories/Category.vue'),
       },
