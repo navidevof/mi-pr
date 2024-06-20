@@ -13,7 +13,7 @@
         @change="setInformationData"
       />
       <strong v-if="!informationCategory?.exercises.length" class="text-center font-semibold">Sin información</strong>
-      <button @click="saveData" class="main-button mx-auto">Guardar</button>
+      <button v-if="informationCategory?.exercises.length" @click="saveData" class="main-button mx-auto">Guardar</button>
     </section>
   </MainSection>
 </template>
@@ -64,11 +64,21 @@ onMounted(async () => {
       return;
     }
 
-    informationCategory.value = res.data;
     if (res.data.exercises.length > 0) {
-      res.data.exercises.forEach((exercise: IExerciseInformation) => {
-        exercises.value.push(exercise);
-      });
+      informationCategory.value = res.data;
+      if (exercises.value.length == 0) {
+        res.data.exercises.forEach((exercise: IExerciseInformation) => {
+          exercises.value.push({
+            ...exercise,
+            weight: '0',
+            unit: 'lbs',
+            reps: '0',
+            series: '',
+          });
+        });
+      }
+    } else {
+      categoryId.value = '';
     }
   } catch (error) {
     console.error('Error fetching information:', error);

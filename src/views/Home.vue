@@ -11,7 +11,7 @@
         :exercises="data.exercises"
       />
       <div v-if="informationCategories.length <= 0" class="flex flex-col gap-y-3 text-center font-semibold">
-        <span>Aún no cuentas con tu primera categoría</span>
+        <span>Aún no cuentas con tu primera rutina</span>
         <ModalCreateCategory :customButton="true"> Créala aquí </ModalCreateCategory>
       </div>
     </section>

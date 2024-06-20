@@ -4,7 +4,7 @@
       <form @submit.prevent="addNewCategory" class="flex flex-col gap-y-4">
         <IconClose @click="showModalCreate = false" class="hover-button -my-2 ml-auto w-5" />
         <label class="flex flex-col gap-y-2">
-          <span class="font-semibold">Nombre la categoría</span>
+          <span class="font-semibold">Nombre la rutina</span>
           <input required id="name" name="name" v-model="name" />
         </label>
         <button class="main-button mx-auto">Crear</button>
@@ -17,7 +17,7 @@
     @click="showModalCreate = true"
     class="main-button fixed bottom-20 right-5 flex items-center justify-center gap-2 p-6"
   >
-    <IconPlus class="w-4" /> Categoría
+    <IconPlus class="w-4" /> rutina
   </button>
   <button v-else @click="showModalCreate = true" class="main-button mx-auto flex items-center justify-center gap-2">
     <IconPlus class="w-4" />
@@ -71,7 +71,7 @@ const addNewCategory = async () => {
       position: POSITION.TOP_CENTER,
     });
 
-    router.push(`/configuracion/categorias/${res.data}`);
+    router.push(`/configuracion/rutinas/${res.data}`);
   } catch (error) {
     console.error('Error fetching information:', error);
     toast.error(ERROR_MESSAGE_DEFAULT, {

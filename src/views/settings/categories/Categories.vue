@@ -1,7 +1,7 @@
 <template>
-  <MainSection title="Categorías" :show-back-arrow="true">
+  <MainSection title="Rutinas" :show-back-arrow="true">
     <section class="flex flex-col gap-y-4">
-      <GoToCard v-for="category in categories" :key="category.categoryId" :link="`/configuracion/categorias/${category.categoryId}`">
+      <GoToCard v-for="category in categories" :key="category.categoryId" :link="`/configuracion/rutinas/${category.categoryId}`">
         <h4 class="font-semibold">{{ category.name }} ({{ category.exercises.length }})</h4>
         <IconChevron class="w-5 -rotate-90" />
       </GoToCard>
