@@ -48,6 +48,8 @@ const signInGoogle = async () => {
     if (!resGetUser.data?.user) {
       const resCreateUser = await createUser({
         uid: data.user.uid,
+        name: data.user?.displayName,
+        image: data.user?.photoURL,
       });
 
       if (resCreateUser.error) {
