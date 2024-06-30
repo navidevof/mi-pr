@@ -25,8 +25,8 @@ import type { IInformationCategory } from '@/interfaces/category';
 import { getInformationCategories } from '@/services/category';
 import { onMounted, ref } from 'vue';
 import { storeToRefs } from 'pinia';
-
 import { useUIStore } from '@/stores/ui';
+
 import MainSection from '@/components/common/sections/MainSection.vue';
 import CardGeneralInformationPr from '@/components/home/CardGeneralInformationPr.vue';
 import { POSITION, useToast } from 'vue-toastification';
