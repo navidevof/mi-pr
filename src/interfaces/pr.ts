@@ -1,7 +1,7 @@
 export interface IPr {
   name: string;
   uid: string;
-  weight: string;
+  weight: number;
   unit: string;
   series: string;
   exerciseId: string;
