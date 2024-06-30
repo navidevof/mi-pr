@@ -8,7 +8,7 @@ export interface IExerciseInformation {
   exerciseId: string;
   name: string;
   unit: string;
-  weight: string;
+  weight: number;
   reps: string;
   series: string;
 }

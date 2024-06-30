@@ -62,7 +62,7 @@ const showMoreInfo = ref<boolean>(false);
 
 const data = ref({
   exerciseId: '',
-  weight: '',
+  weight: 0,
   unit: '',
   reps: '',
   series: '',

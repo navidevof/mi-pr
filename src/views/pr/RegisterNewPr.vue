@@ -73,7 +73,7 @@ onMounted(async () => {
         res.data.exercises.forEach((exercise: IExerciseInformation) => {
           exercises.value.push({
             ...exercise,
-            weight: '0',
+            weight: 0,
             unit: 'lbs',
             reps: '0',
             series: '',

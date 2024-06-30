@@ -10,10 +10,10 @@
       </div>
     </div>
   </BaseAlert>
-  <aside v-show="!showAlert && isMinimized" class="fixed left-0 top-3 flex w-full transition duration-300">
+  <aside v-show="!showAlert && isMinimized" class="fixed left-0 top-5 flex w-full transition duration-300">
     <button
       @click="handleClickAlert"
-      class="mx-auto flex w-10/12 max-w-fit items-center justify-center gap-x-2 rounded-3xl bg-custom-black-3 px-5 py-2 text-center"
+      class="mx-auto flex w-10/12 max-w-fit animate-bounce items-center justify-center gap-x-2 rounded-3xl bg-custom-black-3 px-5 py-2 text-center"
     >
       <IconInformation class="w-9 text-blue-500" />
       <h4 class="font-semibold">¡Entrenamiento en curso!</h4>
@@ -53,7 +53,7 @@ const handleClickAlert = () => {
 
 onMounted(() => {
   if (categoryId.value) {
-    showAlert.value = true;
+    isMinimized.value = true;
   }
 });
 </script>

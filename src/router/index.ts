@@ -51,6 +51,11 @@ const protectedRoutes: RouteRecordRaw[] = [
         name: 'pr-new',
         component: () => import('@/views/pr/RegisterNewPr.vue'),
       },
+      {
+        path: '/pr/historial/:categoryId',
+        name: 'pt-history',
+        component: () => import('@/views/pr/HistoryPr.vue'),
+      },
     ],
   },
 ];
