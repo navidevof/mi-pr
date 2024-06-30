@@ -57,7 +57,11 @@ const $audio = ref<HTMLAudioElement>();
 const showModal = ref<boolean>(false);
 
 const decrementTimer = () => {
-  if (time.value == 0) return;
+  if (time.value <= 0) return;
+  if (time.value - 5 <= 0) {
+    time.value = 0;
+    return;
+  }
   time.value -= 5;
 };
 
@@ -69,6 +73,7 @@ const stopTimer = () => {
   if (timer !== null) {
     clearInterval(timer);
     timer = null;
+    time.value = 0;
     isPlay.value = false;
   }
 };
@@ -81,6 +86,7 @@ const playTime = () => {
       time.value--;
     } else {
       stopTimer();
+      playAudio();
     }
   }, 1000);
 };
@@ -88,25 +94,20 @@ const playTime = () => {
 const playAudio = () => {
   if (!$audio.value) return;
   $audio.value.play();
+  finishTime.value = true;
 };
 
 const stopAudio = () => {
   if (!$audio.value) return;
+  $audio.value.currentTime = 0;
   $audio.value.pause();
 };
 
 const closeTime = () => {
   stopTimer();
-  stopAudio();
   showModal.value = false;
+  finishTime.value = false;
+  time.value = 0;
+  stopAudio();
 };
-
-watch(time, () => {
-  if (!$audio.value) return;
-
-  if (time.value <= 0) {
-    playAudio();
-    finishTime.value = true;
-  }
-});
 </script>
