@@ -15,11 +15,14 @@
       <strong v-if="!informationCategory?.exercises.length" class="text-center font-semibold">Sin información</strong>
       <button v-if="informationCategory?.exercises.length" @click="saveData" class="main-button mx-auto">Guardar</button>
     </section>
+
+    <Timer />
   </MainSection>
 </template>
 
 <script lang="ts" setup>
 import MainSection from '@/components/common/sections/MainSection.vue';
+import Timer from '@/components/common/utils/Timer.vue';
 import CardRegisterPr from '@/components/pr/CardRegisterPr.vue';
 import { ERROR_MESSAGE_DEFAULT } from '@/constants/messages';
 import type { IInformationCategory } from '@/interfaces/category';
