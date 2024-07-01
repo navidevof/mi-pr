@@ -13,7 +13,7 @@
       </aside>
       <aside
         v-show="categoryDetail?.updatedAt == 0"
-        class="flex items-start gap-x-4 rounded-lg border-2 border-blue-900/60 bg-custom-black-3 p-3"
+        class="flex max-w-lg items-start gap-x-4 rounded-lg border-2 border-blue-900/60 bg-custom-black-3 p-3 md:items-center"
       >
         <IconInformation class="w-10 pt-1 text-blue-500" />
         <span class="w-full text-sm">Vaya, parece que aún no has realizado ningún PR para esta rutina.</span>
@@ -21,7 +21,19 @@
       <aside class="flex flex-col gap-y-2">
         <h4 class="font-semibold">Ejercicios</h4>
         <ul class="flex list-inside flex-col gap-y-2 pl-3 font-light">
-          <li v-for="exercise in categoryDetail?.exercises" :key="exercise.exerciseId" class="flex items-center gap-3">
+          <li
+            v-for="(exercise, idx) in categoryDetail?.exercises"
+            :key="exercise.exerciseId"
+            class="relative flex max-w-md items-center gap-x-3 rounded-lg bg-custom-black-3 p-4"
+          >
+            <div class="flex h-auto flex-col items-center justify-center gap-y-4">
+              <button @click="() => upItem(idx)" v-show="idx != 0">
+                <IconArrowTop class="w-4 text-white" />
+              </button>
+              <button @click="() => downItem(idx)" v-show="idx != (categoryDetail?.exercises ? categoryDetail?.exercises.length - 1 : 0)">
+                <IconArrowTop class="w-4 -scale-y-100 text-white" />
+              </button>
+            </div>
             <span class="">{{ exercise.name }}</span>
             <IconTrash @click="() => removeExercise(exercise.exerciseId)" class="hover-button w-5 text-red-500" />
           </li>
@@ -30,6 +42,7 @@
         <button @click="loadExercises" class="main-button mx-auto mt-4 flex items-center gap-2 text-sm">
           <IconPlus class="w-4" /> Agregar
         </button>
+        <button @click="removeCategory" class="mt-4 text-red-500 underline">Eliminar rutina</button>
       </aside>
     </section>
   </MainSection>
@@ -55,13 +68,14 @@ import moment from '@/utils/moment-config';
 import MainSection from '@/components/common/sections/MainSection.vue';
 import IconTrash from '@/components/icons/IconTrash.vue';
 import IconClose from '@/components/icons/IconClose.vue';
+import IconArrowTop from '@/components/icons/IconArrowTop.vue';
 import IconInformation from '@/components/icons/IconInformation.vue';
 import { storeToRefs } from 'pinia';
 
 import { useUIStore } from '@/stores/ui';
-import { onMounted, ref } from 'vue';
+import { onBeforeUnmount, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { addExercise, deleteExercise, getCategory, updateName } from '@/services/category';
+import { addExercise, deleteCategory, deleteExercise, getCategory, updateExercises, updateName } from '@/services/category';
 import type { ICategoryDetail } from '@/interfaces/category';
 import { ERROR_MESSAGE_DEFAULT } from '@/constants/messages';
 import { POSITION, useToast } from 'vue-toastification';
@@ -88,16 +102,20 @@ const selectedExercise = ref<string>('');
 
 const newName = ref<string>('');
 
+const initialExercises = ref<String[]>([]);
+
+const categoryId = ref<string>('');
+
 onMounted(async () => {
   try {
     if (!route.params.categoryId) {
       router.back();
     }
 
-    const categoryId = route.params.categoryId as string;
+    categoryId.value = route.params.categoryId as string;
 
     isLoading.value = true;
-    const res = await getCategory({ categoryId, uid: uid.value });
+    const res = await getCategory({ categoryId: categoryId.value, uid: uid.value });
     if (res.error || !res.data) {
       toast.error(res.message, {
         timeout: 5000,
@@ -108,6 +126,7 @@ onMounted(async () => {
 
     newName.value = res.data.name;
     categoryDetail.value = res.data;
+    initialExercises.value = [...categoryDetail.value.exercises.map(e => e.exerciseId)];
   } catch (error) {
     console.error('Error fetching information:', error);
     toast.error(ERROR_MESSAGE_DEFAULT, {
@@ -118,6 +137,43 @@ onMounted(async () => {
     isLoading.value = false;
   }
 });
+
+onBeforeUnmount(async () => {
+  await saveExercises();
+});
+
+const saveExercises = async () => {
+  try {
+    isLoading.value = true;
+    const existChange = verifyExerciseChanges();
+    if (!existChange) return;
+
+    const newExercises = categoryDetail.value?.exercises.map(e => e.exerciseId) ?? [];
+
+    const res = await updateExercises({ categoryId: categoryId.value, exercises: newExercises });
+
+    if (res.error) {
+      toast.error(res.message, {
+        timeout: 5000,
+        position: POSITION.TOP_CENTER,
+      });
+      return;
+    }
+
+    toast.success('Ejercicios guardados con éxito', {
+      timeout: 5000,
+      position: POSITION.TOP_CENTER,
+    });
+  } catch (error) {
+    console.error('Error fetching information:', error);
+    toast.error(ERROR_MESSAGE_DEFAULT, {
+      timeout: 5000,
+      position: POSITION.TOP_CENTER,
+    });
+  } finally {
+    isLoading.value = false;
+  }
+};
 
 const loadExercises = async () => {
   if (exercises.value.length > 0) {
@@ -168,7 +224,7 @@ const addNewExercise = async () => {
   showModalAddExercise.value = false;
 
   try {
-    const res = await addExercise({ categoryId: categoryDetail.value.categoryId, exerciseId: selectedExercise.value });
+    const res = await addExercise({ categoryId: categoryId.value, exerciseId: selectedExercise.value });
 
     if (res.error) {
       categoryDetail.value.exercises.pop();
@@ -177,6 +233,8 @@ const addNewExercise = async () => {
         position: POSITION.TOP_CENTER,
       });
     }
+
+    initialExercises.value = [...categoryDetail.value.exercises.map(e => e.exerciseId)];
   } catch (error) {
     categoryDetail.value.exercises.pop();
     console.error('Error fetching information:', error);
@@ -194,7 +252,7 @@ const removeExercise = async (exerciseId: string) => {
 
   try {
     categoryDetail.value.exercises = categoryDetail.value.exercises.filter(e => e.exerciseId != exerciseId);
-    const res = await deleteExercise({ categoryId: categoryDetail.value.categoryId, exerciseId });
+    const res = await deleteExercise({ categoryId: categoryId.value, exerciseId });
 
     if (res.error) {
       toast.error(res.message, {
@@ -206,7 +264,10 @@ const removeExercise = async (exerciseId: string) => {
       if (!newExercise) return;
 
       categoryDetail.value.exercises.push({ ...newExercise });
+      return;
     }
+
+    initialExercises.value = [...categoryDetail.value.exercises.map(e => e.exerciseId)];
   } catch (error) {
     const newExercise = exercises.value.find(e => e.exerciseId == selectedExercise.value);
     if (!newExercise) return;
@@ -226,7 +287,7 @@ const changeName = async () => {
     if (!categoryDetail.value || !newName.value.trim()) return;
 
     isLoading.value = true;
-    const res = await updateName({ categoryId: categoryDetail.value.categoryId, name: newName.value });
+    const res = await updateName({ categoryId: categoryId.value, name: newName.value });
 
     if (res.error) {
       toast.error(res.message, {
@@ -249,5 +310,70 @@ const changeName = async () => {
   } finally {
     isLoading.value = false;
   }
+};
+
+const removeCategory = async () => {
+  try {
+    isLoading.value = true;
+    const res = await deleteCategory({ categoryId: categoryId.value });
+
+    if (res.error) {
+      toast.error(res.message, {
+        timeout: 5000,
+        position: POSITION.TOP_CENTER,
+      });
+      return;
+    }
+
+    toast.success('Rutina eliminada con Éxito', {
+      timeout: 5000,
+      position: POSITION.TOP_CENTER,
+    });
+
+    router.back();
+  } catch (error) {
+    console.error('Error fetching information:', error);
+    toast.error(ERROR_MESSAGE_DEFAULT, {
+      timeout: 5000,
+      position: POSITION.TOP_CENTER,
+    });
+  } finally {
+    isLoading.value = false;
+  }
+};
+
+const upItem = (idx: number) => {
+  if (idx - 1 === -1 || !categoryDetail.value) return;
+
+  const newOrder = [...categoryDetail.value.exercises];
+  const topItem = newOrder[idx - 1];
+  newOrder[idx - 1] = newOrder[idx];
+  newOrder[idx] = topItem;
+
+  categoryDetail.value.exercises = newOrder;
+};
+
+const downItem = (idx: number) => {
+  if (!categoryDetail.value) return;
+
+  if (idx + 1 === categoryDetail.value.exercises.length) return;
+
+  const newOrder = [...categoryDetail.value.exercises];
+  const topItem = newOrder[idx + 1];
+  newOrder[idx + 1] = newOrder[idx];
+  newOrder[idx] = topItem;
+
+  categoryDetail.value.exercises = newOrder;
+};
+
+const verifyExerciseChanges = (): boolean => {
+  if (initialExercises.value.length == 0 || !categoryDetail.value?.exercises.length) return true;
+
+  const extractExercises = categoryDetail.value.exercises.map(e => e.exerciseId);
+
+  if (initialExercises.value.length !== categoryDetail.value?.exercises.length) {
+    return true;
+  }
+  return !initialExercises.value.every((value, index) => value === extractExercises[index]);
 };
 </script>
