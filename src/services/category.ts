@@ -14,6 +14,7 @@ import {
   arrayRemove,
   setDoc,
   orderBy,
+  deleteDoc,
 } from 'firebase/firestore';
 
 export const getInformationCategories = async ({ uid }: { uid: string }) => {
@@ -215,11 +216,49 @@ export const addExercise = async ({ categoryId, exerciseId }: { exerciseId: stri
   }
 };
 
+export const updateExercises = async ({ categoryId, exercises }: { categoryId: string; exercises: String[] }) => {
+  try {
+    console.log({ categoryId, exercises });
+
+    await updateDoc(doc(db, categoriesCollection, categoryId), {
+      exercises,
+    });
+
+    return {
+      error: false,
+      message: 'ok',
+    };
+  } catch (error: any) {
+    console.log({ error: error.message });
+    return {
+      error: true,
+      message: 'Error al actualizar la información',
+    };
+  }
+};
+
 export const deleteExercise = async ({ categoryId, exerciseId }: { exerciseId: string; categoryId: string }) => {
   try {
     await updateDoc(doc(db, categoriesCollection, categoryId), {
       exercises: arrayRemove(exerciseId),
     });
+
+    return {
+      error: false,
+      message: 'ok',
+    };
+  } catch (error: any) {
+    console.log({ error: error.message });
+    return {
+      error: true,
+      message: 'Error al eliminar la información',
+    };
+  }
+};
+
+export const deleteCategory = async ({ categoryId }: { categoryId: string }) => {
+  try {
+    await deleteDoc(doc(db, categoriesCollection, categoryId));
 
     return {
       error: false,

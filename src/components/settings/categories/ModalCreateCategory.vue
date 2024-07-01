@@ -17,7 +17,7 @@
     @click="showModalCreate = true"
     class="main-button fixed bottom-20 right-5 flex items-center justify-center gap-2 p-6"
   >
-    <IconPlus class="w-4" /> rutina
+    <IconPlus class="w-4" /> Rutina
   </button>
   <button v-else @click="showModalCreate = true" class="main-button mx-auto flex items-center justify-center gap-2">
     <IconPlus class="w-4" />

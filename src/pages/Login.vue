@@ -62,7 +62,7 @@ const signInGoogle = async () => {
 
       uid.value = data.user.uid;
 
-      toast.success('Bienvenido ' + data.user?.displayName, {
+      toast.success(`Bienvenid@ ¡${data.user?.displayName}!`, {
         timeout: 5000,
         position: POSITION.TOP_CENTER,
       });
